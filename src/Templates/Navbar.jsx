@@ -49,7 +49,7 @@ const Navbar = () => {
           <div className="flex">
             <div className="flex-shrink-0">
               <a href="/" className="text-2xl font-bold text-gray-800 no-underline">
-                Ridoana
+                Ridoan
               </a>
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
