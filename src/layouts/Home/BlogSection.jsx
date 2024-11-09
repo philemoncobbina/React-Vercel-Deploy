@@ -19,7 +19,7 @@ const BlogSection = () => {
         </p>
       </div>
 
-      <div className="flex flex-wrap -mx-4">
+      <div className="flex flex-wrap ">
         {blogs.map(blog => (
           <div key={blog.id} className="w-full sm:w-1/2 lg:w-1/3 px-4 mb-8">
             <BlogCard {...blog} />

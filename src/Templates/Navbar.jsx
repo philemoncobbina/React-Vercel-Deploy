@@ -49,7 +49,7 @@ const Navbar = () => {
           <div className="flex">
             <div className="flex-shrink-0">
               <a href="/" className="text-2xl font-bold text-gray-800 no-underline">
-                Ridoan
+                Ridoane
               </a>
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
@@ -57,7 +57,7 @@ const Navbar = () => {
                 href="/"
                 className={`${getLinkClass('/')} px-3 py-2 rounded-md text-sm font-medium no-underline`}
               >
-                Hom
+                Home
               </a>
               <a
                 href="/about"
