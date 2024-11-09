@@ -1,19 +1,6 @@
 import React, { useState } from 'react';
 import { submitContactForm } from "../../Services/ContactService";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-
 export const useContactForm = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -23,6 +10,8 @@ export const useContactForm = () => {
     message: '',
   });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);  // For loading spinner
+  const [errorMessage, setErrorMessage] = useState("");  // For error message
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -31,6 +20,9 @@ export const useContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);  // Show spinner on submit
+    setErrorMessage("");  // Clear any previous error message
+
     try {
       await submitContactForm(formData);
       setIsAlertOpen(true);
@@ -41,14 +33,19 @@ export const useContactForm = () => {
         phoneNumber: '',
         message: '',
       });
+      setIsLoading(false);  // Hide spinner after submission
     } catch (error) {
       console.error('Failed to submit form:', error);
+      setErrorMessage("There was an error submitting your form. Please try again.");  // Set error message
+      setIsLoading(false);  // Hide spinner after error
     }
   };
 
   return {
     formData,
     isAlertOpen,
+    isLoading,
+    errorMessage,
     handleInputChange,
     handleSubmit,
     setIsAlertOpen,
@@ -59,6 +56,8 @@ const ContactSection = () => {
   const {
     formData,
     isAlertOpen,
+    isLoading,
+    errorMessage,
     handleInputChange,
     handleSubmit,
     setIsAlertOpen,
@@ -128,6 +127,8 @@ const ContactSection = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Additional sections like Company Info */}
             </div>
           </div>
 
@@ -136,6 +137,8 @@ const ContactSection = () => {
               <form onSubmit={handleSubmit}>
                 <h2 className="text-3xl text-center font-bold font-heading mb-4">Get in touch</h2>
                 <p className="text-center text-gray-600 mb-16">Fill out the form to connect with a member of our team.</p>
+
+                {/* Form Fields */}
                 <div className="grid gap-6 mb-6 md:grid-cols-2">
                   <div>
                     <label htmlFor="firstName" className="block mb-2 text-gray-800 font-medium">First Name</label>
@@ -144,47 +147,48 @@ const ContactSection = () => {
                       id="firstName"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className="w-full p-4 text-xs font-semibold leading-none bg-gray-50 rounded outline-none"
+                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="John"
                       required
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="lock mb-2 text-gray-800 font-medium">Last Name</label>
+                    <label htmlFor="lastName" className="block mb-2 text-gray-800 font-medium">Last Name</label>
                     <input
                       type="text"
                       id="lastName"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className="w-full p-4 text-xs font-semibold leading-none bg-gray-50 rounded outline-none"
+                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="Doe"
                       required
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="lock mb-2 text-gray-800 font-medium">Email</label>
+                    <label htmlFor="email" className="block mb-2 text-gray-800 font-medium">Email</label>
                     <input
                       type="email"
                       id="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full p-4 text-xs font-semibold leading-none bg-gray-50 rounded outline-none"
+                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="john.doe@example.com"
                       required
                     />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="lock mb-2 text-gray-800 font-medium">Phone</label>
+                    <label htmlFor="phone" className="block mb-2 text-gray-800 font-medium">Phone</label>
                     <input
-                    type="tel"
-                    id="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="+233 45 90737"
-                  />
+                      type="tel"
+                      id="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="+233 45 90737"
+                    />
                   </div>
                 </div>
+
                 <div className="mb-6">
                   <label htmlFor="message" className="lock mb-2 text-gray-800 font-medium">Message</label>
                   <textarea
@@ -192,61 +196,79 @@ const ContactSection = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     rows="4"
-                    className="w-full p-4 text-xs font-semibold leading-none resize-y bg-gray-50 h-32 rounded outline-none"
+                    className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Your message here..."
                     required
                   ></textarea>
                 </div>
+
+                {/* Error Message */}
+                {errorMessage && (
+                  <div className="mb-4 text-red-600 text-center">
+                    <p>{errorMessage}</p>
+                  </div>
+                )}
+
                 <div className="w-full px-2 mb-4">
-                    <label className="inline-flex">
-                      <input type="checkbox" />
-                      <span className="ml-2 text-sm text-gray-500">I agree to our friendly <a className="text-orange-500" href="#">privacy policy</a>.</span>
-                    </label>
+                  <label className="inline-flex">
+                    <input type="checkbox" />
+                    <span className="ml-2 text-sm text-gray-500">I agree to our friendly <a className="text-orange-500" href="#">privacy policy</a>.</span>
+                  </label>
                 </div>
-                <button className="block w-full p-4 text-sm font-semibold leading-none bg-orange-500 hover:bg-orange-700 text-white rounded" type="submit">Submit</button>
+
+                <button 
+                  className="block w-full p-4 text-sm font-semibold leading-none bg-orange-500 hover:bg-orange-700 text-white rounded"
+                  type="submit"
+                  disabled={isLoading}  // Disable the button during loading
+                >
+                  {isLoading ? (
+                    <div className="flex justify-center items-center space-x-2">
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                        <path fill="currentColor" d="M4 12a8 8 0 0116 0" />
+                      </svg>
+                      <span>Submitting...</span>
+                    </div>
+                  ) : (
+                    "Submit"
+                  )}
+                </button>
               </form>
+
+              {isAlertOpen && (
+                <div
+                  className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50"
+                  role="dialog"
+                  aria-labelledby="modal-title"
+                  aria-hidden={!isAlertOpen}
+                >
+                  <div className="bg-white rounded-lg shadow-lg w-full max-w-sm mx-4 p-6 relative">
+                    <h3 id="modal-title" className="text-xl font-semibold text-green-700 mb-4">
+                      Success!
+                    </h3>
+                    <p className="text-green-700 mb-4">Your message has been sent successfully!</p>
+                    <button
+                      onClick={() => setIsAlertOpen(false)}
+                      className="absolute top-2 right-2 text-green-500 hover:text-green-700"
+                      aria-label="Close"
+                    >
+                      <svg
+                        className="fill-current h-6 w-6"
+                        role="button"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <title>Close</title>
+                        <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 00-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 001.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Alert Dialog */}
-<style jsx>{`
-  .custom-alert-button {
-    background-color: black;
-    color: white;
-    width: 80px; /* Default width for larger screens */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-  }
-  .custom-alert-button:hover {
-    background-color: #333; /* Hover effect color */
-  }
-  @media (max-width: 600px) {
-    .custom-alert-button {
-      width: 100%; /* Full width on smaller screens */
-    }
-  }
-`}</style>
-<AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-  <AlertDialogTrigger asChild>
-    <Button style={{ display: 'none' }}></Button>
-  </AlertDialogTrigger>
-  <AlertDialogContent className="bg-white p-6 rounded-lg shadow-lg">
-    <AlertDialogHeader>
-      <AlertDialogTitle className="text-gray-900">Success</AlertDialogTitle>
-      <AlertDialogDescription className="text-gray-600">
-        Your message has been sent successfully!
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogAction className="custom-alert-button" onClick={() => setIsAlertOpen(false)}>
-        OK
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-
-      
     </section>
   );
 };

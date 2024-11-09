@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
-      <div style={{ height: '70px' }} className="max-w-7xl mx-auto px-4 pt-3 md:px-6 lg:px-8">
+      <div style={{ height: '70px' }} className="max-w-7xl mx-auto px-4 pt-3 ">
         <div className="flex justify-between">
           <div className="flex">
             <div className="flex-shrink-0">

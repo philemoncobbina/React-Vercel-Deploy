@@ -13,6 +13,7 @@ const SignupForm = () => {
   const [error, setError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  // New state for loading
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -37,14 +38,17 @@ const SignupForm = () => {
     e.preventDefault();
     setError(''); // Clear any previous error messages
     setSuccessMessage(''); // Clear any previous success messages
+    setIsLoading(true);  // Start loading when the form is submitted
 
     if (!formData.first_name || !formData.last_name) {
       setError('Both first and last names are required');
+      setIsLoading(false);  // Stop loading if there's an error
       return;
     }
 
     if (formData.password.length < 8) {
       setError('Password must be at least 8 characters long');
+      setIsLoading(false);  // Stop loading if there's an error
       return;
     }
 
@@ -59,6 +63,8 @@ const SignupForm = () => {
     } catch (error) {
       console.error('Error during sign up:', error);
       setError('Something went wrong. Please try again.'); // Fallback error message for unexpected errors
+    } finally {
+      setIsLoading(false);  // Stop loading once the request is completed
     }
   };
 
@@ -158,10 +164,20 @@ const SignupForm = () => {
             </div>
             <button
               type="submit"
-              className={`w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-300 ${passwordError ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={passwordError}
+              className={`w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-300 ${passwordError || isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={passwordError || isLoading}  // Disable the button when password is invalid or loading
             >
-              Sign Up
+              {isLoading ? (
+                <div className="flex justify-center items-center space-x-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path fill="currentColor" d="M4 12a8 8 0 0116 0" />
+                  </svg>
+                  <span>Signing up...</span>
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
           <p className="mt-6 text-center text-gray-600">

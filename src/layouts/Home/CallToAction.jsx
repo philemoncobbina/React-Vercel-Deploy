@@ -2,7 +2,7 @@ import React from 'react';
 
 const CallToAction = () => {
   return (
-    <section id="about" className="bg-gray-100 pb-8 pt-20 dark:bg-gray-800 lg:pb-[70px] lg:pt-[120px]">
+    <section id="about" className="bg-gray-100 items-center mx-auto dark:bg-gray-800 ">
       <div className="container mx-auto">
         <div className="wow fadeInUp" data-wow-delay=".2s">
           <div className="-mx-4 flex flex-wrap items-center">
@@ -22,8 +22,8 @@ const CallToAction = () => {
               </div>
             </div>
             <div className="w-full px-4 lg:w-1/2">
-              <div className="-mx-2 flex flex-wrap sm:-mx-4 lg:-mx-2 xl:-mx-4">
-                <div className="w-full px-2 sm:w-1/2 sm:px-4 lg:px-2 xl:px-4">
+              <div className="-mx-2 flex flex-wrap sm:-mx-4 lg:-mx-2 ">
+                <div className="w-full px-2 sm:w-1/2 sm:px-4 lg:px-2 ">
                   <div className="relative mb-4 sm:mb-8 sm:h-[400px] md:h-[540px] lg:h-[400px] xl:h-[500px]">
                     <img
                       alt="about image"

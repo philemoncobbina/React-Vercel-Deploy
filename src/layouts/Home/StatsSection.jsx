@@ -22,7 +22,7 @@ const Stat = ({ targetNumber, description, iconSrc }) => {
   }, [inView, targetNumber]);
 
   return (
-    <div ref={ref} className="w-full xs:w-80 mb-4 py-7 px-7 bg-white rounded-4xl shadow-lg">
+    <div ref={ref} className="w-full mx-auto  mb-4 py-7 px-7 bg-white rounded-4xl shadow-lg">
       <div className="flex items-center">
         <img className="block mr-6" src={iconSrc} alt="" />
         <div>
@@ -36,7 +36,7 @@ const Stat = ({ targetNumber, description, iconSrc }) => {
 
 const StatsSection = () => {
   return (
-    <section className="py-20 md:py-32 bg-gray-100">
+    <section className="py-20  bg-gray-100">
       <div className="container px-4 mx-auto">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap -mx-4">

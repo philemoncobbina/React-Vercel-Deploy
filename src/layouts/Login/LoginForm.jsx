@@ -8,6 +8,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  // New state for loading
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -15,11 +16,20 @@ const LoginForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const result = await login(email, password);
-    if (result.success) {
-      window.location.href = '/dashboard';
-    } else {
-      setError(result.error);
+    setIsLoading(true);  // Set loading to true when form is submitted
+    setError('');  // Clear previous errors
+
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        window.location.href = '/dashboard';
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);  // Reset loading state once the request is completed
     }
   };
 
@@ -90,8 +100,19 @@ const LoginForm = () => {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-300"
+              disabled={isLoading}  // Disable button during loading
             >
-              Login
+              {isLoading ? (
+                <div className="flex justify-center items-center space-x-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path fill="currentColor" d="M4 12a8 8 0 0116 0" />
+                  </svg>
+                  <span>Logging in...</span>
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
           <p className="mt-6 text-center text-gray-600">
